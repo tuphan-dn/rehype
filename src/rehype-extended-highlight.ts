@@ -58,6 +58,9 @@ export const rehypeExtendedHighlight =
         children: tabs.map((tab, i) => ({
           type: 'mdxJsxFlowElement',
           name: tabName,
+          tagName: undefined,
+          properties: undefined,
+          position: undefined,
           attributes: [
             {
               type: 'mdxJsxAttribute',

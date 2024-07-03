@@ -10,10 +10,8 @@
   },
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
   "exports": {
     "./*": {
-      "types": "./dist/types/*.d.ts",
       "require": "./dist/cjs/*.js",
       "import": "./dist/esm/*.js"
     },
@@ -31,10 +29,9 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky",
-    "build": "pnpm clean && pnpm build:types && pnpm build:cjs && pnpm build:esm",
+    "build": "pnpm clean && pnpm build:cjs && pnpm build:esm",
     "build:cjs": "tsc -b ./tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > ./dist/cjs/package.json",
     "build:esm": "tsc -b ./tsconfig.esm.json && echo '{\"type\":\"module\"}' > ./dist/esm/package.json",
-    "build:types": "tsc -b ./tsconfig.types.json",
     "clean": "rimraf dist docs",
     "ci:docs": "typedoc --includeVersion --excludePrivate --excludeProtected src/index.ts",
     "ci:release": "semantic-release"

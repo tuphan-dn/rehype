@@ -7,14 +7,14 @@ import { visit } from 'unist-util-visit'
 import parseAttrs from 'attributes-parser'
 
 export type Options = RehypeHighlightOptions & {
-  tabs: string
-  tab: string
+  tabsName: string
+  tabName: string
 }
 
 export const rehypeExtendedHighlight =
-  ({ tabs, tab, ...options }: Options) =>
+  ({ tabsName, tabName, ...options }: Options) =>
   (tree: Root, file: VFile) => {
-    if (!tabs || !tab)
+    if (!tabsName || !tabName)
       throw new Error('Cannot detect tabs & tab JSX component name')
     // Metadata for Copy Button & Label
     visit(tree, 'element', (node) => {
@@ -52,12 +52,12 @@ export const rehypeExtendedHighlight =
       const tabs: Element[] = group[name]
       Object.assign(node, {
         type: 'mdxJsxFlowElement',
-        name: tabs,
+        name: tabsName,
         attributes: [],
         data: { _mdxExplicitJsx: true },
         children: tabs.map((tab, i) => ({
           type: 'mdxJsxFlowElement',
-          name: tab,
+          name: tabName,
           attributes: [
             {
               type: 'mdxJsxAttribute',

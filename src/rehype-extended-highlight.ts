@@ -1,37 +1,42 @@
-import rehypeHighlight, { type Options } from 'rehype-highlight'
+import rehypeHighlight, {
+  type Options as RehypeHighlightOptions,
+} from 'rehype-highlight'
 import type { Root, Element } from 'hast'
 import type { VFile } from 'vfile'
 import { visit } from 'unist-util-visit'
 import parseAttrs from 'attributes-parser'
 
+export type Options = RehypeHighlightOptions & {
+  tabs: string
+  tab: string
+}
+
 export const rehypeExtendedHighlight =
-  (options: Options) => (tree: Root, file: VFile) => {
-    // Copy Button & Label
+  ({ tabs, tab, ...options }: Options) =>
+  (tree: Root, file: VFile) => {
+    if (!tabs || !tab)
+      throw new Error('Cannot detect tabs & tab JSX component name')
+    // Metadata for Copy Button & Label
     visit(tree, 'element', (node) => {
       if (node.tagName !== 'pre') return
       visit(node, 'element', (code) => {
         if (code.tagName !== 'code') return
         visit(code, 'text', (child) => {
+          const { meta } = Object.assign({ meta: '' }, child.data)
+          const attr = parseAttrs(meta)
           node.properties['data-content'] = child.value
+          node.properties['data-label'] = attr['label']?.toString()
         })
       })
     })
-    // Label
-    visit(tree, 'element', (node) => {
-      if (node.tagName !== 'pre') return
-      visit(node, 'element', (child) => {
-        if (child.tagName !== 'code') return
-        const attr = parseAttrs(Object.assign({ meta: '' }, child.data).meta)
-        node.properties['data-label'] = attr['label']?.toString()
-      })
-    })
-    // Tabs
+    // Metadata for Tabs
     const group: Record<string, Element[]> = {}
     visit(tree, 'element', (node, index = 0, parent) => {
       if (parent?.type !== 'root' || node.tagName !== 'pre') return
       visit(node, 'element', (child) => {
         if (child.tagName !== 'code') return
-        const attr = parseAttrs(Object.assign({ meta: '' }, child.data).meta)
+        const { meta } = Object.assign({ meta: '' }, child.data)
+        const attr = parseAttrs(meta)
         node.properties['data-group'] = attr['group']?.toString()
       })
       const name = node.properties['data-group']?.toString()
@@ -40,24 +45,23 @@ export const rehypeExtendedHighlight =
       else parent.children.splice(index, 1) // Remove the subsequent nodes
       group[name].push(Object.assign({}, node))
     })
-    visit(tree, 'element', (node, _, parent) => {
+    // Group the tabs
+    visit(tree, 'element', (node) => {
       const name = node.properties['data-group']?.toString()
-      if (parent?.type !== 'root' || node.tagName !== 'pre' || !name) return
+      if (node.tagName !== 'pre' || !name) return
       const tabs: Element[] = group[name]
       Object.assign(node, {
-        type: 'element',
-        tagName: 'div',
-        properties: {
-          role: 'tablist',
-          class: 'tabs tabs-bordered',
-        },
+        type: 'mdxJsxFlowElement',
+        name: tabs,
+        attributes: [],
+        data: { _mdxExplicitJsx: true },
         children: tabs.map((tab, i) => ({
           type: 'mdxJsxFlowElement',
-          name: 'Tab',
+          name: tab,
           attributes: [
             {
               type: 'mdxJsxAttribute',
-              name: 'name',
+              name: 'group',
               value: tab.properties['data-group'],
             },
             {
@@ -67,7 +71,7 @@ export const rehypeExtendedHighlight =
             },
             {
               type: 'mdxJsxAttribute',
-              name: 'checked',
+              name: 'defaultChecked',
               value: !i,
             },
           ],

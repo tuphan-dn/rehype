@@ -19,8 +19,11 @@
   },
   "license": "MIT",
   "scripts": {
+    "prepare": "husky",
     "build": "pnpm clean && tsc",
-    "clean": "rimraf dist docs"
+    "clean": "rimraf dist docs",
+    "ci:docs": "typedoc --includeVersion --excludePrivate --excludeProtected src/index.ts",
+    "ci:release": "semantic-release"
   },
   "engines": {
     "node": "20"
@@ -38,6 +41,7 @@
     "@semantic-release/github": "^10.0.7",
     "@types/hast": "^3.0.4",
     "@types/node": "^20.14.9",
+    "husky": "^9.0.11",
     "rimraf": "^5.0.7",
     "semantic-release": "^24.0.0",
     "ts-node": "^10.9.2",

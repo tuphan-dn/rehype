@@ -16,16 +16,16 @@ export const rehypeExtendedHighlight =
   (tree: Root, file: VFile) => {
     if (!tabsName || !tabName)
       throw new Error('Cannot detect tabs & tab JSX component name')
-    // Metadata for Copy Button & Label
+    // Metadata for Label & Copy Button
     visit(tree, 'element', (node) => {
       if (node.tagName !== 'pre') return
       visit(node, 'element', (code) => {
         if (code.tagName !== 'code') return
+        const { meta } = Object.assign({ meta: '' }, code.data)
+        const attr = parseAttrs(meta)
+        node.properties['data-label'] = attr['label']?.toString()
         visit(code, 'text', (child) => {
-          const { meta } = Object.assign({ meta: '' }, child.data)
-          const attr = parseAttrs(meta)
           node.properties['data-content'] = child.value
-          node.properties['data-label'] = attr['label']?.toString()
         })
       })
     })
@@ -72,7 +72,6 @@ export const rehypeExtendedHighlight =
             {
               type: 'mdxJsxAttribute',
               name: 'defaultChecked',
-              value: !i,
             },
           ],
           data: { _mdxExplicitJsx: true },

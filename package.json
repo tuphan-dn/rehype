@@ -1,0 +1,48 @@
+{
+  "name": "@gears-bot/rehype",
+  "version": "1.0.0",
+  "description": "The set of custom of rehype plugins for blogy.me",
+  "main": "dist/index.js",
+  "repository": "git@github.com:tuphan-dn/rehype.git",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "keywords": [
+    "markdown",
+    "mdx",
+    "rehype"
+  ],
+  "author": {
+    "name": "Tu Phan",
+    "email": "tuphan@gears.bot"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "pnpm clean && tsc",
+    "clean": "rimraf dist docs"
+  },
+  "engines": {
+    "node": "20"
+  },
+  "dependencies": {
+    "attributes-parser": "^2.2.2",
+    "rehype-highlight": "^7.0.0",
+    "unist-util-visit": "^5.0.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^10.0.7",
+    "@types/hast": "^3.0.4",
+    "@types/node": "^20.14.9",
+    "rimraf": "^5.0.7",
+    "semantic-release": "^24.0.0",
+    "ts-node": "^10.9.2",
+    "typedoc": "^0.26.3",
+    "typescript": "^5.5.3",
+    "vfile": "^6.0.1"
+  }
+}

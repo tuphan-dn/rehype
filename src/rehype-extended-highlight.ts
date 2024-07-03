@@ -67,7 +67,7 @@ export const rehypeExtendedHighlight =
             },
             {
               type: 'mdxJsxAttribute',
-              name: 'defaultChecked',
+              name: 'checked',
               value: !i,
             },
           ],

@@ -31,7 +31,7 @@ export const rehypeExtendedHighlight =
       if (parent?.type !== 'root' || node.tagName !== 'pre') return
       visit(node, 'element', (child) => {
         if (child.tagName !== 'code') return
-        const attr = parseAttrs(Object.assign({ group: '' }, child.data).group)
+        const attr = parseAttrs(Object.assign({ meta: '' }, child.data).meta)
         node.properties['data-group'] = attr['group']?.toString()
       })
       const name = node.properties['data-group']?.toString()

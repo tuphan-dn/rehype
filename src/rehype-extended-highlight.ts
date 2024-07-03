@@ -27,7 +27,7 @@ export const rehypeExtendedHighlight =
     })
     // Tabs
     const group: Record<string, Element[]> = {}
-    visit(tree, 'element', (node, index = -1, parent) => {
+    visit(tree, 'element', (node, index = 0, parent) => {
       if (parent?.type !== 'root' || node.tagName !== 'pre') return
       visit(node, 'element', (child) => {
         if (child.tagName !== 'code') return
@@ -36,7 +36,7 @@ export const rehypeExtendedHighlight =
       })
       const name = node.properties['data-group']?.toString()
       if (!name) return
-      if (!group[name]) group[name] = []
+      if (!group[name]) group[name] = [] // Keep the first child as an anchor
       else parent.children.splice(index, 1) // Remove the subsequent nodes
       group[name].push(Object.assign({}, node))
     })

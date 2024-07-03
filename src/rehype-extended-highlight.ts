@@ -46,9 +46,9 @@ export const rehypeExtendedHighlight =
       group[name].push(Object.assign({}, node))
     })
     // Group the tabs
-    visit(tree, 'element', (node) => {
+    visit(tree, 'element', (node, _, parent) => {
       const name = node.properties['data-group']?.toString()
-      if (node.tagName !== 'pre' || !name) return
+      if (parent?.type !== 'root' || node.tagName !== 'pre' || !name) return
       const tabs: Element[] = group[name]
       Object.assign(node, {
         type: 'mdxJsxFlowElement',

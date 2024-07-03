@@ -1,6 +1,6 @@
 {
   "name": "@gears-bot/rehype",
-  "version": "1.0.0",
+  "version": "1.0.0-next.1",
   "description": "The set of custom of rehype plugins for blogy.me",
   "main": "dist/index.js",
   "repository": "git@github.com:tuphan-dn/rehype.git",

@@ -5,12 +5,12 @@ import { log } from 'isomorphic-git'
 import fs from 'fs'
 import { relative } from 'path'
 
-export type Options = {
+export type RehypeGitContributorsOptions = {
   compName: string
 }
 
 export const rehypeGitContributors =
-  ({ compName }: Options) =>
+  ({ compName }: RehypeGitContributorsOptions) =>
   async (tree: Root, file: VFile) => {
     if (!compName) throw new Error('Cannot detect JSX component name')
     const {

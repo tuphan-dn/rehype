@@ -1,18 +1,16 @@
-import rehypeHighlight, {
-  type Options as RehypeHighlightOptions,
-} from 'rehype-highlight'
+import rehypeHighlight, { type Options } from 'rehype-highlight'
 import type { Root, Element } from 'hast'
 import type { VFile } from 'vfile'
 import { visit } from 'unist-util-visit'
 import parseAttrs from 'attributes-parser'
 
-export type Options = RehypeHighlightOptions & {
+export type RehypeExtendedHighlightOptions = Options & {
   tabsName: string
   tabName: string
 }
 
 export const rehypeExtendedHighlight =
-  ({ tabsName, tabName, ...options }: Options) =>
+  ({ tabsName, tabName, ...options }: RehypeExtendedHighlightOptions) =>
   (tree: Root, file: VFile) => {
     if (!tabsName || !tabName)
       throw new Error('Cannot detect tabs & tab JSX component name')

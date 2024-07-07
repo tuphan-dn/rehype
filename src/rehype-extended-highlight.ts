@@ -70,10 +70,14 @@ export const rehypeExtendedHighlight =
               name: 'label',
               value: tab.properties['data-label'],
             },
-            {
-              type: 'mdxJsxAttribute',
-              name: 'defaultChecked',
-            },
+            ...(!i
+              ? [
+                  {
+                    type: 'mdxJsxAttribute',
+                    name: 'defaultChecked',
+                  },
+                ]
+              : []),
           ],
           data: { _mdxExplicitJsx: true },
           children: [tab],

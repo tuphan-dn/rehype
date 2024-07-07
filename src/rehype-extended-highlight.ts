@@ -1,31 +1,29 @@
-import rehypeHighlight, {
-  type Options as RehypeHighlightOptions,
-} from 'rehype-highlight'
+import rehypeHighlight, { type Options } from 'rehype-highlight'
 import type { Root, Element } from 'hast'
 import type { VFile } from 'vfile'
 import { visit } from 'unist-util-visit'
 import parseAttrs from 'attributes-parser'
 
-export type Options = RehypeHighlightOptions & {
-  tabs: string
-  tab: string
+export type RehypeExtendedHighlightOptions = Options & {
+  tabsName: string
+  tabName: string
 }
 
 export const rehypeExtendedHighlight =
-  ({ tabs, tab, ...options }: Options) =>
+  ({ tabsName, tabName, ...options }: RehypeExtendedHighlightOptions) =>
   (tree: Root, file: VFile) => {
-    if (!tabs || !tab)
+    if (!tabsName || !tabName)
       throw new Error('Cannot detect tabs & tab JSX component name')
-    // Metadata for Copy Button & Label
+    // Metadata for Label & Copy Button
     visit(tree, 'element', (node) => {
       if (node.tagName !== 'pre') return
       visit(node, 'element', (code) => {
         if (code.tagName !== 'code') return
+        const { meta } = Object.assign({ meta: '' }, code.data)
+        const attr = parseAttrs(meta)
+        node.properties['data-label'] = attr['label']?.toString()
         visit(code, 'text', (child) => {
-          const { meta } = Object.assign({ meta: '' }, child.data)
-          const attr = parseAttrs(meta)
           node.properties['data-content'] = child.value
-          node.properties['data-label'] = attr['label']?.toString()
         })
       })
     })
@@ -46,18 +44,21 @@ export const rehypeExtendedHighlight =
       group[name].push(Object.assign({}, node))
     })
     // Group the tabs
-    visit(tree, 'element', (node) => {
+    visit(tree, 'element', (node, _, parent) => {
       const name = node.properties['data-group']?.toString()
-      if (node.tagName !== 'pre' || !name) return
+      if (parent?.type !== 'root' || node.tagName !== 'pre' || !name) return
       const tabs: Element[] = group[name]
       Object.assign(node, {
         type: 'mdxJsxFlowElement',
-        name: tabs,
+        name: tabsName,
         attributes: [],
         data: { _mdxExplicitJsx: true },
         children: tabs.map((tab, i) => ({
           type: 'mdxJsxFlowElement',
-          name: tab,
+          name: tabName,
+          tagName: undefined,
+          properties: undefined,
+          position: undefined,
           attributes: [
             {
               type: 'mdxJsxAttribute',
@@ -69,11 +70,14 @@ export const rehypeExtendedHighlight =
               name: 'label',
               value: tab.properties['data-label'],
             },
-            {
-              type: 'mdxJsxAttribute',
-              name: 'defaultChecked',
-              value: !i,
-            },
+            ...(!i
+              ? [
+                  {
+                    type: 'mdxJsxAttribute',
+                    name: 'defaultChecked',
+                  },
+                ]
+              : []),
           ],
           data: { _mdxExplicitJsx: true },
           children: [tab],

@@ -2,7 +2,7 @@ import rehypeHighlight, { type Options } from 'rehype-highlight'
 import type { Root, Element } from 'hast'
 import type { VFile } from 'vfile'
 import { visit } from 'unist-util-visit'
-import parseAttrs from 'attributes-parser'
+import toml from 'toml'
 
 export type RehypeExtendedHighlightOptions = Options & {
   tabsName: string
@@ -20,8 +20,8 @@ export const rehypeExtendedHighlight =
       visit(node, 'element', (code) => {
         if (code.tagName !== 'code') return
         const { meta } = Object.assign({ meta: '' }, code.data)
-        const attr = parseAttrs(meta)
-        node.properties['data-label'] = attr['label']?.toString()
+        const attr = toml.parse(meta)
+        node.properties['data-label'] = attr.label || ''
         visit(code, 'text', (child) => {
           node.properties['data-content'] = child.value
         })
@@ -34,8 +34,8 @@ export const rehypeExtendedHighlight =
       visit(node, 'element', (child) => {
         if (child.tagName !== 'code') return
         const { meta } = Object.assign({ meta: '' }, child.data)
-        const attr = parseAttrs(meta)
-        node.properties['data-group'] = attr['group']?.toString()
+        const attr = toml.parse(meta)
+        node.properties['data-group'] = attr.group || ''
       })
       const name = node.properties['data-group']?.toString()
       if (!name) return

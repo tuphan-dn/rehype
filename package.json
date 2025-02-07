@@ -45,6 +45,7 @@
   "dependencies": {
     "attributes-parser": "^2.2.2",
     "isomorphic-git": "^1.26.4",
+    "mdast-util-to-string": "^4.0.0",
     "rehype-highlight": "^7.0.0",
     "unist-util-visit": "^5.0.0"
   },

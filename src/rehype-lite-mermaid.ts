@@ -34,14 +34,12 @@ export const rehypeLiteMermaid = ({
         !mermaidable(node)
       )
         return
-      parent.children[index] = {
-        type: 'element',
-        tagName: 'span',
-        properties: {
-          className: [className],
-        },
-        children: [{ type: 'text', value: toString(node) }],
-      }
+      if (!parent.properties.className) parent.properties.className = className
+      else if (Array.isArray(parent.properties.className))
+        parent.properties.className.push(className)
+      else
+        parent.properties.className = `${parent.properties.className} ${className}`
+      parent.children[index] = { type: 'text', value: toString(node) }
     })
   }
 }

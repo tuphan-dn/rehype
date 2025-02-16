@@ -8,15 +8,21 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
   "files": [
     "dist"
   ],
   "exports": {
-    ".": {
-      "require": "./dist/cjs/index.js",
-      "import": "./dist/esm/index.js"
+    "./rehype-extended-highlight": {
+      "require": "./dist/cjs/rehype-extended-highlight.js",
+      "import": "./dist/esm/rehype-extended-highlight.js"
+    },
+    "./rehype-git-contributors": {
+      "require": "./dist/cjs/rehype-git-contributors.js",
+      "import": "./dist/esm/rehype-git-contributors.js"
+    },
+    "./rehype-lite-mermaid": {
+      "require": "./dist/cjs/rehype-lite-mermaid.js",
+      "import": "./dist/esm/rehype-lite-mermaid.js"
     },
     "./package.json": "./package.json"
   },
@@ -36,7 +42,7 @@
     "build:cjs": "tsc -p ./tsconfig.cjs.json && tsc-alias -p ./tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > ./dist/cjs/package.json",
     "build:esm": "tsc -p ./tsconfig.esm.json && tsc-alias -p ./tsconfig.esm.json && echo '{\"type\":\"module\"}' > ./dist/esm/package.json",
     "clean": "rimraf dist docs",
-    "ci:docs": "typedoc --includeVersion --excludePrivate --excludeProtected src/index.ts",
+    "ci:docs": "typedoc",
     "ci:release": "semantic-release"
   },
   "engines": {
